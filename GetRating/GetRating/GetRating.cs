@@ -142,9 +142,6 @@ namespace GetRating
                         Console.WriteLine("\tRead {0}\n", Rating);
                     }
                 }
-                Ratings[0].id = "test";
-                ItemResponse<Rating> andersenFamilyResponse = await this.container.CreateItemAsync<Rating>(Ratings[0], new PartitionKey(Ratings[0].userId));
-
 
                 return Ratings;
             }
