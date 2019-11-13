@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Collections.Generic;
 using System.Net;
 using Microsoft.Azure.Cosmos;
+using System.Web.Http;
 
 namespace GetRating
 {
@@ -37,7 +38,6 @@ namespace GetRating
             log.LogInformation("C# HTTP trigger function processed a request.");
 
             string ratingId = req.Query["ratingId"];
-
             string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
             dynamic data = JsonConvert.DeserializeObject(requestBody);
             ratingId = ratingId ?? data?.ratingId;
@@ -61,14 +61,23 @@ namespace GetRating
                 finally
                 {
                     Console.WriteLine("End of demo, press any key to exit.");
-                    Console.ReadKey();
+                    //Console.ReadKey();
                 }
 
+            if (String.IsNullOrEmpty(ratingId)) {
+                return new BadRequestObjectResult("Please pass a ratingId on the query string or in the request body");
+            }
+            else if (rating.Count == 0) {
+                return (ActionResult)new NotFoundObjectResult("Not found data");
+            }
+            else {
+               return  (ActionResult)new OkObjectResult(JsonConvert.SerializeObject(rating));
+            }
 
-            //return JsonConvert.SerializeObject(rating);
-            return (ratingId != null && rating.Count != 0)
-                ? (ActionResult)new OkObjectResult(JsonConvert.SerializeObject(rating))
-                : new BadRequestObjectResult("Please pass a ratingId on the query string or in the request body");
+            ////return JsonConvert.SerializeObject(rating);
+            //return (ratingId != null && rating.Count != 0)
+            //    ? (ActionResult)new OkObjectResult(JsonConvert.SerializeObject(rating))
+            //    : new BadRequestObjectResult("Please pass a ratingId on the query string or in the request body");
 
         }
 
@@ -77,10 +86,10 @@ namespace GetRating
             // ADD THIS PART TO YOUR CODE
 
             // The Azure Cosmos DB endpoint for running this sample.
-            private static readonly string EndpointUri = ConfigurationManager.AppSettings.Get("CosmosDBEndpointUri");
+            private static readonly string EndpointUri = System.Environment.GetEnvironmentVariable("CosmosDBEndpointUri");//ConfigurationManager.AppSettings.Get("CosmosDBEndpointUri");
 
             // The primary key for the Azure Cosmos account.
-            private static readonly string PrimaryKey = ConfigurationManager.AppSettings.Get("CosmosDBPrimaryKey");
+            private static readonly string PrimaryKey = System.Environment.GetEnvironmentVariable("CosmosDBPrimaryKey");//ConfigurationManager.AppSettings.Get("CosmosDBPrimaryKey");
 
             // The Cosmos client instance
             private CosmosClient cosmosClient;
