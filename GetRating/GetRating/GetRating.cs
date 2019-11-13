@@ -68,7 +68,7 @@ namespace GetRating
                 return new BadRequestObjectResult("Please pass a ratingId on the query string or in the request body");
             }
             else if (rating.Count == 0) {
-                return (ActionResult)new NotFoundObjectResult("Not found data!!!!");
+                return (ActionResult)new NotFoundObjectResult("Not found dataXXXX");
             }
             else {
                return  (ActionResult)new OkObjectResult(JsonConvert.SerializeObject(rating));
