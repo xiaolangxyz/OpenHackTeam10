@@ -66,7 +66,7 @@ namespace GetRating
 
 
             //return JsonConvert.SerializeObject(rating);
-            return (ratingId != null || rating.Count == 0)
+            return (ratingId != null && rating.Count != 0)
                 ? (ActionResult)new OkObjectResult(JsonConvert.SerializeObject(rating))
                 : new BadRequestObjectResult("Please pass a ratingId on the query string or in the request body");
 
@@ -77,9 +77,10 @@ namespace GetRating
             // ADD THIS PART TO YOUR CODE
 
             // The Azure Cosmos DB endpoint for running this sample.
-            private static readonly string EndpointUri = "https://hucosmosdb.documents.azure.com:443/";
+            private static readonly string EndpointUri = ConfigurationManager.AppSettings.Get("CosmosDBEndpointUri");
+
             // The primary key for the Azure Cosmos account.
-            private static readonly string PrimaryKey = "HmmJ2qUl9fwDrmXXKnYwrfzpCttL30yChfljzbcjw6TPJbQHUq3QYCoNr28FjfsBOgzjM8HRYjBRfsQ5pBzheg==";
+            private static readonly string PrimaryKey = ConfigurationManager.AppSettings.Get("CosmosDBPrimaryKey");
 
             // The Cosmos client instance
             private CosmosClient cosmosClient;
